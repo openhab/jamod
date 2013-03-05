@@ -32,13 +32,12 @@ import net.wimpi.modbus.util.SerialParameters;
  * @author Dieter Wimberger
  * @version @version@ (@date@)
  */
-public class ModbusSerialListener
-    implements Runnable {
+public class ModbusSerialListener {
 
   //Members
-  private boolean m_Listening;
+  private boolean m_Listening;               	//Flag for toggling listening/!listening
   private SerialConnection m_SerialCon;
-  private Thread m_Listener;
+  private static int c_RequestCounter = 0;          //counter for amount of requests
 
   /**
    * Constructs a new <tt>ModbusSerialListener</tt> instance.
@@ -47,65 +46,50 @@ public class ModbusSerialListener
    */
   public ModbusSerialListener(SerialParameters params) {
     m_SerialCon = new SerialConnection(params);
+    //System.out.println("Created connection.");
+    listen();
   }//constructor
 
   /**
-   * Starts this <tt>ModbusTCPListener</tt>.
-   */
-  public void start() {
-    m_Listener = new Thread(this);
-    m_Listener.start();
-    m_Listening = true;
-  }//start
-
-  /**
-   * Stops this <tt>ModbusTCPListener</tt>.
-   */
-  public void stop() {
-    m_Listening = false;
-    try {
-      m_Listener.join();
-    } catch (Exception ex) {
-      //
-    }
-  }//stop
-
-  /**
-   * Runs this <tt>ModbusSerialListener</tt>.
    * Listen to incoming messages.
    */
-  public void run() {
+  private void listen() {
     try {
       m_Listening = true;
       m_SerialCon.open();
       //System.out.println("Opened Serial connection.");
       ModbusTransport transport = m_SerialCon.getModbusTransport();
       do {
-        try {
-          //1. read the request
-          ModbusRequest request = transport.readRequest();
-          ModbusResponse response = null;
+        if (m_Listening) {
+          try {
+            //1. read the request
+            ModbusRequest request = transport.readRequest();
+            ModbusResponse response = null;
 
-          //test if Process image exists
-          if (ModbusCoupler.getReference().getProcessImage() == null) {
-            response =
-                request.createExceptionResponse(Modbus.ILLEGAL_FUNCTION_EXCEPTION);
-          } else {
-            response = request.createResponse();
+            //test if Process image exists
+            if (ModbusCoupler.getReference().getProcessImage() == null) {
+              response =
+                  request.createExceptionResponse(Modbus.ILLEGAL_FUNCTION_EXCEPTION);
+            } else {
+              response = request.createResponse();
+            }
+
+            if (Modbus.debug)
+              System.out.println("Request:" + request.getHexMessage());
+            if (Modbus.debug)
+              System.out.println("Response:" + response.getHexMessage());
+
+            transport.writeMessage(response);
+
+            count();
+          } catch (ModbusIOException ex) {
+            ex.printStackTrace();
+            continue;
           }
-
-          if (Modbus.debug)
-            System.out.println("Request:" + request.getHexMessage());
-          if (Modbus.debug)
-            System.out.println("Response:" + response.getHexMessage());
-
-          transport.writeMessage(response);
-
-        } catch (ModbusIOException ex) {
-          ex.printStackTrace();
-          continue;
         }
-      } while (m_Listening);
+        //ensure nice multithreading behaviour on specific platforms
+
+      } while (true);
 
     } catch (Exception e) {
       //FIXME: this is a major failure, how do we handle this
@@ -114,14 +98,34 @@ public class ModbusSerialListener
   }//listen
 
   /**
+   * Sets the listening flag of this <tt>ModbusTCPListener</tt>.
+   *
+   * @param b true if listening (and accepting incoming connections),
+   *        false otherwise.
+   */
+  public void setListening(boolean b) {
+    m_Listening = b;
+  }//setListening
+
+  /**
    * Tests if this <tt>ModbusTCPListener</tt> is listening
    * and accepting incoming connections.
    *
    * @return true if listening (and accepting incoming connections),
-   *         false otherwise.
+   *          false otherwise.
    */
   public boolean isListening() {
     return m_Listening;
   }//isListening
 
-}//class ModbusSerialListener
+  private void count() {
+    c_RequestCounter++;
+    if (c_RequestCounter == REQUESTS_TOGC) {
+      System.gc();
+      c_RequestCounter = 0;
+    }
+  }//count
+
+  private static final int REQUESTS_TOGC = 15;
+
+}//class ModbusTCPListener

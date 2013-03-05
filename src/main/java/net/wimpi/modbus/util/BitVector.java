@@ -57,20 +57,11 @@ public final class BitVector {
    * Toggles the flag deciding whether the LSB
    * or the MSB of the byte corresponds to the
    * first bit (index=0).
-   */
-  public void toggleAccess() {
-    m_MSBAccess = !m_MSBAccess;
-  }//toggleAccess
-
-  /**
-   * Toggles the flag deciding whether the LSB
-   * or the MSB of the byte corresponds to the
-   * first bit (index=0).
    *
    * @param b true if LSB=0 up to MSB=7, false otherwise.
    */
   public void toggleAccess(boolean b) {
-    m_MSBAccess = b;
+    m_MSBAccess = !m_MSBAccess;
   }//toggleAccess
 
   /**
@@ -219,9 +210,10 @@ public final class BitVector {
   public String toString() {
     StringBuffer sbuf = new StringBuffer();
     for (int i = 0; i < size(); i++) {
+      int idx = doTranslateIndex(i);
       sbuf.append(
-          ((((m_Data[byteIndex(i)]
-          & (0x01 << bitIndex(i))) != 0
+          ((((m_Data[byteIndex(idx)]
+          & (0x01 << bitIndex(idx))) != 0
           ) ? true : false) ? '1' : '0')
       );
       if (((i + 1) % 8) == 0) {
@@ -276,7 +268,6 @@ public final class BitVector {
   }//bitIndex
 
   private final int translateIndex(int idx) {
-
     if (m_MSBAccess) {
       int mod4 = idx % 4;
       int div4 = idx / 4;
@@ -291,6 +282,20 @@ public final class BitVector {
     } else {
       return idx;
     }
+  }//translateIndex
+
+  private static final int doTranslateIndex(int idx) {
+
+      int mod4 = idx % 4;
+      int div4 = idx / 4;
+
+      if ((div4 % 2) != 0) {
+        //odd
+        return (idx + ODD_OFFSETS[mod4]);
+      } else {
+        //straight
+        return (idx + STRAIGHT_OFFSETS[mod4]);
+      }
   }//translateIndex
 
   /**
