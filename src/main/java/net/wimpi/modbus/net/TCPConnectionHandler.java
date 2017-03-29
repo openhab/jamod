@@ -72,8 +72,8 @@ public class TCPConnectionHandler implements Runnable {
                 } else {
                     response = request.createResponse();
                 }
-                logger.debug("Request (transaction id {}): {}", request.getHexMessage(), request.getTransactionID());
-                logger.debug("Response (transaction id {}): {}", response.getHexMessage(), response.getTransactionID());
+                logger.debug("Request (transaction id {}): {}", request.getTransactionID(), request.getHexMessage());
+                logger.debug("Response (transaction id {}): {}", response.getTransactionID(), response.getHexMessage());
 
                 m_Transport.writeMessage(response);
             } while (true);
