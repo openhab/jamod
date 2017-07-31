@@ -33,7 +33,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author Dieter Wimberger
  * @version @version@ (@date@)
- *
+ * @see net.wimpi.modbus.io.ModbusASCIITransport#FRAME_START
+ * @see net.wimpi.modbus.io.ModbusASCIITransport#FRAME_END
  * @see net.wimpi.modbus.io.ModbusASCIITransport#FRAME_START
  * @see net.wimpi.modbus.io.ModbusASCIITransport#FRAME_END
  */

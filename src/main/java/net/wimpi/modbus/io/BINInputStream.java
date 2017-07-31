@@ -26,7 +26,8 @@ import java.io.InputStream;
  *
  * @author Dieter Wimberger
  * @version @version@ (@date@)
- *
+ * @see ModbusBINTransport#FRAME_START
+ * @see ModbusBINTransport#FRAME_END
  * @see ModbusBINTransport#FRAME_START
  * @see ModbusBINTransport#FRAME_END
  */
