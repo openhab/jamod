@@ -37,7 +37,6 @@ import net.wimpi.modbus.util.ModbusUtil;
  *
  * @author Dieter Wimberger
  * @author John Charlton
- *
  * @version @version@ (@date@)
  */
 abstract public class ModbusSerialTransport implements ModbusTransport {

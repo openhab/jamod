@@ -30,7 +30,6 @@ import net.wimpi.modbus.io.ModbusTransport;
  * @author Dieter Wimberger
  * @version @version@ (@date@)
  */
-
 public class UDPMasterConnection implements ModbusSlaveConnection {
 
     private static int LOCAL_PORT = 50000;

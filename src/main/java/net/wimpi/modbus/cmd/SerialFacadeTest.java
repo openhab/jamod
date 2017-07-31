@@ -1,4 +1,6 @@
-/***
+
+/**
+ *
  * Copyright 2002-2010 jamod development team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +14,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ***/
+ **
+ *
+ * @author Jamod developers
+ */
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -46,7 +51,6 @@ import net.wimpi.modbus.procimg.Register;
 import net.wimpi.modbus.util.BitVector;
 import net.wimpi.modbus.util.ModbusUtil;
 import net.wimpi.modbus.util.SerialParameters;
-
 public class SerialFacadeTest {
 
     public static void main(String[] args) {

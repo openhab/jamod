@@ -43,7 +43,6 @@ import net.wimpi.modbus.util.SerialParameters;
  *
  * @author Dieter Wimberger
  * @author John Charlton
- *
  * @version @version@ (@date@)
  */
 public class ModbusSerialMaster {

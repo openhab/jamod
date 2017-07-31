@@ -27,7 +27,6 @@ import net.wimpi.modbus.msg.ModbusMessage;
  *
  * @author Dieter Wimberger
  * @author John Charlton
- *
  * @version @version@ (@date@)
  */
 public final class ModbusUtil {

@@ -37,7 +37,6 @@ import net.wimpi.modbus.util.ModbusUtil;
  *
  * @author John Charlton
  * @author Dieter Wimberger
- *
  * @version @version@ (@date@)
  */
 public class ModbusRTUTransport extends ModbusSerialTransport {
