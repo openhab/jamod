@@ -7,9 +7,12 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * @author Sami Salonen
  */
 package net.wimpi.modbus.net;
+
+/**
+ * @author Sami Salonen
+ **/
 public interface ModbusSlaveConnection {
     /**
      * Connects the connection to the endpoint

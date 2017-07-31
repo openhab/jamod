@@ -19,11 +19,16 @@
  * Copied with style from
  * Lea, Doug: "Concurrent Programming in Java: Design Principles and Patterns",
  * Second Edition, Addison-Wesley, ISBN 0-201-31009-0, November 1999
- **
  *
- * @author Jamod developers
+ *
  */
 package net.wimpi.modbus.util;
+
+/**
+ *
+ * @author Jamod developers
+ *
+ */
 public class LinkedQueue {
 
     /**
