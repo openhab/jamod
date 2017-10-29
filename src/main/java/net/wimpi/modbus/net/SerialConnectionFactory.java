@@ -3,7 +3,9 @@ package net.wimpi.modbus.net;
 import net.wimpi.modbus.util.SerialParameters;
 
 /**
- * <p>SerialConnectionFactory interface.</p>
+ * <p>
+ * SerialConnectionFactory interface.
+ * </p>
  *
  * @author Sami Salonen
  */

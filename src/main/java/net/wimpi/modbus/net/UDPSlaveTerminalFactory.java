@@ -3,7 +3,9 @@ package net.wimpi.modbus.net;
 import java.net.InetAddress;
 
 /**
- * <p>UDPSlaveTerminalFactory interface.</p>
+ * <p>
+ * UDPSlaveTerminalFactory interface.
+ * </p>
  *
  * @author Sami Salonen
  */

@@ -3,7 +3,9 @@ package net.wimpi.modbus.io;
 import java.net.Socket;
 
 /**
- * <p>ModbusSocketBasedTransportFactory interface.</p>
+ * <p>
+ * ModbusSocketBasedTransportFactory interface.
+ * </p>
  *
  * @author Sami Salonen
  */

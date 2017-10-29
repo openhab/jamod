@@ -50,8 +50,9 @@ import net.wimpi.modbus.procimg.Register;
 import net.wimpi.modbus.util.BitVector;
 import net.wimpi.modbus.util.ModbusUtil;
 import net.wimpi.modbus.util.SerialParameters;
+
 /**
- * 
+ *
  * @author Jamod developers
  **/
 public class SerialFacadeTest {

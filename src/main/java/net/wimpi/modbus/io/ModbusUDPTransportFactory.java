@@ -3,7 +3,9 @@ package net.wimpi.modbus.io;
 import net.wimpi.modbus.net.UDPTerminal;
 
 /**
- * <p>ModbusUDPTransportFactory interface.</p>
+ * <p>
+ * ModbusUDPTransportFactory interface.
+ * </p>
  *
  * @author Sami Salonen
  */

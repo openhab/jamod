@@ -3,7 +3,9 @@ package net.wimpi.modbus.net;
 import java.net.Socket;
 
 /**
- * <p>TCPSlaveConnectionFactory interface.</p>
+ * <p>
+ * TCPSlaveConnectionFactory interface.
+ * </p>
  *
  * @author Sami Salonen
  */
