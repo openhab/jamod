@@ -1,4 +1,4 @@
-This is a fork of Java Modbus Library (jamod) - http://jamod.sourceforge.net/
+This is a fork of Java Modbus Library (jamod) - http://jamod.sourceforge.net/. Original SVN revision at the time of fork was 26 according to https://svn.code.sf.net/p/jamod/svn/trunk/.
 
 ## About
 
