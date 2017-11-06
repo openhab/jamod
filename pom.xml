@@ -24,6 +24,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
 	</properties>
 
 	<parent>
@@ -41,7 +43,7 @@
 		</repository>
 	</repositories>
 
-    <!-- dependency versions here should match roughly the runtime environment of openHAB2 -->
+	<!-- dependency versions here should match roughly the runtime environment of openHAB2 -->
 	<dependencies>
 		<dependency>
 			<groupId>org.openhab</groupId>
@@ -56,10 +58,10 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>slf4j-api</artifactId>
-		    <version>1.7.2</version>
-		    <scope>provided</scope>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.2</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -95,6 +97,15 @@
 				<configuration>
 					<show>private</show>
 					<nohelp>true</nohelp>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -135,13 +146,13 @@
 		<url>https://github.com/openhab/jamod/issues</url>
 	</issueManagement>
 
-    <scm>
-        <url>https://github.com/openhab/jamod/</url>
-        <connection>scm:git:git://github.com/openhab/jamod.git</connection>
-        <developerConnection>scm:git:git@github.com:openhab/jamod.git</developerConnection>
-    </scm>
+	<scm>
+		<url>https://github.com/openhab/jamod/</url>
+		<connection>scm:git:git://github.com/openhab/jamod.git</connection>
+		<developerConnection>scm:git:git@github.com:openhab/jamod.git</developerConnection>
+	</scm>
 
-    <!-- Original jamod developers as specified in http://jamod.sourceforge.net/ -->
+	<!-- Original jamod developers as specified in http://jamod.sourceforge.net/ -->
 	<developers>
 		<developer>
 			<id>wimpi</id>
@@ -165,7 +176,7 @@
 		</developer>
 	</developers>
 
-    <!-- Original jamod contributors as specified in http://jamod.sourceforge.net/ -->
+	<!-- Original jamod contributors as specified in http://jamod.sourceforge.net/ -->
 	<contributors>
 		<contributor>
 			<name>Markus Kuespert</name>
