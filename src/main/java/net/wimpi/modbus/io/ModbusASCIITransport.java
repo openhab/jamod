@@ -209,7 +209,8 @@ public class ModbusASCIITransport extends ModbusSerialTransport {
         } catch (Exception ex) {
             final String errMsg = String.format("I/O exception - failed to read: %s", ex.getMessage());
             logger.debug("{}", errMsg);
-            throw new ModbusIOException("readResponse " + errMsg);
+            throw new ModbusIOException(
+                    String.format("I/O exception: %s %s", ex.getClass().getSimpleName(), ex.getMessage()));
         } finally {
             m_CommPort.disableReceiveThreshold();
         }

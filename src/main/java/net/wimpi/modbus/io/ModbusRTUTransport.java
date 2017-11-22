@@ -169,7 +169,8 @@ public class ModbusRTUTransport extends ModbusSerialTransport {
             final String errMsg = "failed to read";
             logger.error("Last request: {}", ModbusUtil.toHex(lastRequest));
             logger.error("{}: {}", errMsg, ex.getMessage());
-            throw new ModbusIOException("I/O exception - " + errMsg);
+            throw new ModbusIOException(
+                    String.format("I/O exception: %s %s", ex.getClass().getSimpleName(), ex.getMessage()));
         } finally {
             m_CommPort.disableReceiveThreshold();
         }

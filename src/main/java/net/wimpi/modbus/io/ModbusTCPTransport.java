@@ -224,7 +224,8 @@ public class ModbusTCPTransport implements ModbusTransport {
              */
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new ModbusIOException("I/O exception - failed to read.");
+            throw new ModbusIOException(
+                    String.format("I/O exception: %s %s", ex.getClass().getSimpleName(), ex.getMessage()));
         }
     }// readResponse
 
