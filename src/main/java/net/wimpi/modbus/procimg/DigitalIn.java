@@ -1,4 +1,4 @@
-/***
+/**
  * Copyright 2002-2010 jamod development team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,12 +28,12 @@ package net.wimpi.modbus.procimg;
  */
 public interface DigitalIn {
 
-  /**
-   * Tests if this <tt>DigitalIn</tt> is set.
-   * <p>
-   *
-   * @return true if set, false otherwise.
-   */
-  public boolean isSet();
-  
-}//DigitalIn
+    /**
+     * Tests if this <tt>DigitalIn</tt> is set.
+     * <p>
+     *
+     * @return true if set, false otherwise.
+     */
+    public boolean isSet();
+
+}// DigitalIn

@@ -1,4 +1,4 @@
-/***
+/**
  * Copyright 2002-2010 jamod development team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,29 +18,28 @@ package net.wimpi.modbus.procimg;
 
 import net.wimpi.modbus.util.Observable;
 
-
 /**
  * Class implementing an observable digital output.
  *
  * @author Dieter Wimberger
  * @version @version@ (@date@)
  */
-public class ObservableDigitalOut
-    extends Observable
-    implements DigitalOut {
+public class ObservableDigitalOut extends Observable implements DigitalOut {
 
-  /**
-   * A boolean holding the state of this digital out.
-   */
-  protected boolean m_Set;
+    /**
+     * A boolean holding the state of this digital out.
+     */
+    protected boolean m_Set;
 
-  public boolean isSet() {
-    return m_Set;
-  }//isSet
+    @Override
+    public boolean isSet() {
+        return m_Set;
+    }// isSet
 
-  public void set(boolean b) {
-    m_Set = b;
-    notifyObservers("value");
-  }//set
+    @Override
+    public void set(boolean b) {
+        m_Set = b;
+        notifyObservers("value");
+    }// set
 
-}//class ObservableDigitalIn
+}// class ObservableDigitalIn

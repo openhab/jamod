@@ -1,4 +1,4 @@
-/***
+/**
  * Copyright 2002-2010 jamod development team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,26 +23,26 @@ package net.wimpi.modbus;
  * @author Dieter Wimberger
  * @version @version@ (@date@)
  */
-public class ModbusException
-    extends Exception {
+public class ModbusException extends Exception {
 
-  /**
-   * Constructs a new <tt>ModbusException</tt>
-   * instance.
-   */
-  public ModbusException() {
-    super();
-  }//constructor
+    /**
+     * Constructs a new <tt>ModbusException</tt>
+     * instance.
+     */
+    public ModbusException() {
+        super();
+    }// constructor
 
-  /**
-   * Constructs a new <tt>ModbusException</tt>
-   * instance with the given message.
-   * <p>
-   * @param message the message describing this
-   *        <tt>ModbusException</tt>.
-   */
-  public ModbusException(String message) {
-    super(message);
-  }//constructor
+    /**
+     * Constructs a new <tt>ModbusException</tt>
+     * instance with the given message.
+     * <p>
+     *
+     * @param message the message describing this
+     *            <tt>ModbusException</tt>.
+     */
+    public ModbusException(String message) {
+        super(message);
+    }// constructor
 
-}//ModbusException
+}// ModbusException

@@ -1,4 +1,4 @@
-/***
+/**
  * Copyright 2002-2010 jamod development team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,9 @@
 
 package net.wimpi.modbus.net;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.wimpi.modbus.Modbus;
 import net.wimpi.modbus.ModbusCoupler;
 import net.wimpi.modbus.ModbusIOException;
@@ -30,66 +33,63 @@ import net.wimpi.modbus.msg.ModbusResponse;
  * @version @version@ (@date@)
  */
 public class TCPConnectionHandler implements Runnable {
+    private static final Logger logger = LoggerFactory.getLogger(TCPConnectionHandler.class);
 
-  private TCPSlaveConnection m_Connection;
-  private ModbusTransport m_Transport;
+    private TCPSlaveConnection m_Connection;
+    private ModbusTransport m_Transport;
 
-  /**
-   * Constructs a new <tt>TCPConnectionHandler</tt> instance.
-   *
-   * @param con an incoming connection.
-   */
-  public TCPConnectionHandler(TCPSlaveConnection con) {
-    setConnection(con);
-  }//constructor
+    /**
+     * Constructs a new <tt>TCPConnectionHandler</tt> instance.
+     *
+     * @param con an incoming connection.
+     */
+    public TCPConnectionHandler(TCPSlaveConnection con) {
+        setConnection(con);
+    }// constructor
 
-  /**
-   * Sets a connection to be handled by this <tt>
-   * TCPConnectionHandler</tt>.
-   *
-   * @param con a <tt>TCPSlaveConnection</tt>.
-   */
-  public void setConnection(TCPSlaveConnection con) {
-    m_Connection = con;
-    m_Transport = m_Connection.getModbusTransport();
-  }//setConnection
+    /**
+     * Sets a connection to be handled by this <tt>
+     * TCPConnectionHandler</tt>.
+     *
+     * @param con a <tt>TCPSlaveConnection</tt>.
+     */
+    public void setConnection(TCPSlaveConnection con) {
+        m_Connection = con;
+        m_Transport = m_Connection.getModbusTransport();
+    }// setConnection
 
-  public void run() {
-    try {
-      do {
-        //1. read the request
-        ModbusRequest request = m_Transport.readRequest();
-        //System.out.println("Request:" + request.getHexMessage());
-        ModbusResponse response = null;
+    @Override
+    public void run() {
+        try {
+            do {
+                // 1. read the request
+                ModbusRequest request = m_Transport.readRequest();
+                ModbusResponse response = null;
 
-        //test if Process image exists
-        if (ModbusCoupler.getReference().getProcessImage() == null) {
-          response =
-              request.createExceptionResponse(Modbus.ILLEGAL_FUNCTION_EXCEPTION);
-        } else {
-          response = request.createResponse();
+                // test if Process image exists
+                if (ModbusCoupler.getReference().getProcessImage() == null) {
+                    response = request.createExceptionResponse(Modbus.ILLEGAL_FUNCTION_EXCEPTION);
+                } else {
+                    response = request.createResponse();
+                }
+                logger.debug("Request (transaction id {}): {}", request.getTransactionID(), request.getHexMessage());
+                logger.debug("Response (transaction id {}): {}", response.getTransactionID(), response.getHexMessage());
+
+                m_Transport.writeMessage(response);
+            } while (true);
+        } catch (ModbusIOException ex) {
+            if (!ex.isEOF()) {
+                // other troubles, output for debug
+                ex.printStackTrace();
+            }
+        } finally {
+            try {
+                m_Connection.close();
+            } catch (Exception ex) {
+                // ignore
+            }
+
         }
-        /*DEBUG*/
-        if (Modbus.debug) System.out.println("Request:" + request.getHexMessage());
-        if (Modbus.debug) System.out.println("Response:" + response.getHexMessage());
+    }// run
 
-        //System.out.println("Response:" + response.getHexMessage());
-        m_Transport.writeMessage(response);
-      } while (true);
-    } catch (ModbusIOException ex) {
-      if (!ex.isEOF()) {
-        //other troubles, output for debug
-        ex.printStackTrace();
-      }
-    } finally {
-      try {
-        m_Connection.close();
-      } catch (Exception ex) {
-        //ignore
-      }
-
-    }
-  }//run
-
-}//TCPConnectionHandler
-
+}// TCPConnectionHandler
