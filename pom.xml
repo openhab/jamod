@@ -152,6 +152,14 @@
 		<developerConnection>scm:git:git@github.com:openhab/jamod.git</developerConnection>
 	</scm>
 
+	<distributionManagement>
+		<repository>
+			<id>bintray</id>
+			<name>openhab-mvn</name>
+			<url>https://api.bintray.com/maven/openhab/mvn/jamod/;publish=1</url>
+		</repository>
+	</distributionManagement>
+
 	<!-- Original jamod developers as specified in http://jamod.sourceforge.net/ -->
 	<developers>
 		<developer>
