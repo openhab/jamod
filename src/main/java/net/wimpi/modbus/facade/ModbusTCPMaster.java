@@ -120,6 +120,13 @@ public class ModbusTCPMaster {
             m_Transaction = null;
         }
     }// disconnect
+    
+    /**
+     * Check if connected or not
+     */
+    public boolean isConnected(){
+        return m_Connection.isConnected();
+    }
 
     /**
      * Sets the flag that specifies whether to maintain a
