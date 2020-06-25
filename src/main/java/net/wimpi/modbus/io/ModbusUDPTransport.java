@@ -106,7 +106,7 @@ public class ModbusUDPTransport implements ModbusTransport {
         } catch (InterruptedIOException ioex) {
             throw new ModbusIOException("Socket timed out.");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            // ex.printStackTrace();
             throw new ModbusIOException("I/O exception - failed to read.");
         }
     }// readResponse
