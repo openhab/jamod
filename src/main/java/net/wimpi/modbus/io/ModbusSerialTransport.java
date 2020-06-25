@@ -141,7 +141,7 @@ abstract public class ModbusSerialTransport implements ModbusTransport {
         try {
             m_CommPort.enableReceiveThreshold(th); /* chars */
         } catch (UnsupportedCommOperationException e) {
-            logger.error("Failed to setReceiveThreshold: {}", e.getMessage());
+            logger.warn("Failed to setReceiveThreshold: {}", e.getMessage());
         }
     }
 
@@ -154,7 +154,7 @@ abstract public class ModbusSerialTransport implements ModbusTransport {
         try {
             m_CommPort.enableReceiveTimeout(ms); /* milliseconds */
         } catch (UnsupportedCommOperationException e) {
-            logger.error("Failed to setReceiveTimeout: {}", e.getMessage());
+            logger.warn("Failed to setReceiveTimeout: {}", e.getMessage());
         }
     }
 
@@ -177,7 +177,7 @@ abstract public class ModbusSerialTransport implements ModbusTransport {
         m_CommPort.disableReceiveThreshold();
         if (echoLen != len) {
             final String errMsg = "Echo not received";
-            logger.error("Transmit {}", errMsg);
+            logger.debug("Transmit {}", errMsg);
             throw new IOException(errMsg);
         }
     }// readEcho

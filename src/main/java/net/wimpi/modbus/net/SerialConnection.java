@@ -122,7 +122,7 @@ public class SerialConnection implements SerialPortEventListener, ModbusSlaveCon
             m_PortIdentifyer = CommPortIdentifier.getPortIdentifier(m_Parameters.getPortName());
         } catch (NoSuchPortException e) {
             final String errMsg = "Could not get port identifier, maybe insufficient permissions. " + e.getMessage();
-            logger.error("Could not get port identifier, maybe insufficient permissions. {}: {}",
+            logger.debug("Could not get port identifier, maybe insufficient permissions. {}: {}",
                     e.getClass().getName(), e.getMessage());
             throw new Exception(errMsg);
         }
@@ -133,7 +133,7 @@ public class SerialConnection implements SerialPortEventListener, ModbusSlaveCon
             m_SerialPort = m_PortIdentifyer.open("Modbus Serial Master", 30000);
         } catch (PortInUseException e) {
             String msg = "open port failed: " + e.getMessage();
-            logger.error("open port failed: {}: {}", e.getClass().getName(), e.getMessage());
+            logger.debug("open port failed: {}: {}", e.getClass().getName(), e.getMessage());
             throw new Exception(msg);
         }
         logger.trace("Got Serial Port");
@@ -144,7 +144,7 @@ public class SerialConnection implements SerialPortEventListener, ModbusSlaveCon
         } catch (Exception e) {
             // ensure it is closed
             m_SerialPort.close();
-            logger.error("parameter setup failed. {}: {}", e.getClass().getName(), e.getMessage());
+            logger.debug("parameter setup failed. {}: {}", e.getClass().getName(), e.getMessage());
             throw e;
         }
 
@@ -169,7 +169,7 @@ public class SerialConnection implements SerialPortEventListener, ModbusSlaveCon
         } catch (IOException e) {
             m_SerialPort.close();
             String msg = "Error opening i/o streams: " + e.getMessage();
-            logger.error("Error opening i/o streams. {}: {}", e.getClass().getName(), e.getMessage());
+            logger.debug("Error opening i/o streams. {}: {}", e.getClass().getName(), e.getMessage());
             throw new Exception(msg);
         }
         logger.trace("i/o Streams prepared");
@@ -180,7 +180,7 @@ public class SerialConnection implements SerialPortEventListener, ModbusSlaveCon
         } catch (TooManyListenersException e) {
             m_SerialPort.close();
             final String errMsg = "too many listeners added:" + e.getMessage();
-            logger.error("too many listeners added. {}: {}", e.getClass().getName(), e.getMessage());
+            logger.debug("too many listeners added. {}: {}", e.getClass().getName(), e.getMessage());
             throw new Exception(errMsg);
         }
 
@@ -196,7 +196,7 @@ public class SerialConnection implements SerialPortEventListener, ModbusSlaveCon
         try {
             m_SerialPort.enableReceiveTimeout(ms);
         } catch (UnsupportedCommOperationException e) {
-            logger.error("Failed to set receive timeout: {}", e.getMessage());
+            logger.warn("Failed to set receive timeout: {}", e.getMessage());
         }
     }// setReceiveTimeout
 
@@ -261,13 +261,13 @@ public class SerialConnection implements SerialPortEventListener, ModbusSlaveCon
         try {
             m_Transport.close();
         } catch (IOException e) {
-            logger.error("Error occurred when closing transport. {}: {}", e.getClass().getName(), e.getMessage());
+            logger.warn("Error occurred when closing transport. {}: {}", e.getClass().getName(), e.getMessage());
         }
 
         try {
             m_SerialIn.close();
         } catch (IOException e) {
-            logger.error("Error occurred when closing serial input stream. {}: {}", e.getClass().getName(),
+            logger.warn("Error occurred when closing serial input stream. {}: {}", e.getClass().getName(),
                     e.getMessage());
         }
 

@@ -184,7 +184,8 @@ public class ModbusSerialTransaction implements ModbusTransaction {
                             try {
                                 Thread.sleep(m_TransDelayMS);
                             } catch (InterruptedException ex) {
-                                logger.error("InterruptedException: {}", ex.getMessage());
+                                logger.debug("InterruptedException: {}", ex.getMessage());
+                                throw;
                             }
                         }
 
@@ -195,12 +196,12 @@ public class ModbusSerialTransaction implements ModbusTransaction {
                         break;
                     } catch (ModbusIOException e) {
                         tries++;
-                        logger.error(
+                        logger.debug(
                                 "execute try {}/{} error: {}. Request: {} (unit id {} & transaction {}). Serial parameters: {}",
                                 tries, m_Retries + 1, e.getMessage(), m_Request, m_Request.getUnitID(),
                                 m_Request.getTransactionID(), m_SerialCon.getParameters());
                         if (tries >= m_Retries) {
-                            logger.error(
+                            logger.debug(
                                     "execute reached max tries {}, throwing last error: {}. Request: {} (unit id {} & transaction {}). Serial parameters: {}",
                                     m_Retries + 1, e.getMessage(), m_Request, m_Request.getUnitID(),
                                     m_Request.getTransactionID(), m_SerialCon.getParameters());
@@ -210,7 +211,7 @@ public class ModbusSerialTransaction implements ModbusTransaction {
                     }
                 } while (true);
                 if (tries > 0) {
-                    logger.info(
+                    logger.debug(
                             "execute eventually succeeded with {} re-tries. Request: {} (unit id {} & transaction id {}). Serial parameters: {}",
                             tries, m_Request, m_Request.getUnitID(), m_Request.getTransactionID(),
                             m_SerialCon.getParameters());

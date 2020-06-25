@@ -167,8 +167,8 @@ public class ModbusRTUTransport extends ModbusSerialTransport {
             return response;
         } catch (Exception ex) {
             final String errMsg = "failed to read";
-            logger.error("Last request: {}", ModbusUtil.toHex(lastRequest));
-            logger.error("{}: {}", errMsg, ex.getMessage());
+            logger.debug("Last request: {}", ModbusUtil.toHex(lastRequest));
+            logger.debug("{}: {}", errMsg, ex.getMessage());
             throw new ModbusIOException(
                     String.format("I/O exception: %s %s", ex.getClass().getSimpleName(), ex.getMessage()));
         } finally {
@@ -228,7 +228,7 @@ public class ModbusRTUTransport extends ModbusSerialTransport {
                     out.write(inpBuf, 0, inpBytes);
                     m_CommPort.disableReceiveThreshold();
                     if (inpBytes != bc + 2) {
-                        logger.error("awaited {} bytes, but received {}", (bc + 2), inpBytes);
+                        logger.debug("awaited {} bytes, but received {}", (bc + 2), inpBytes);
                     }
                     break;
                 case 0x05:

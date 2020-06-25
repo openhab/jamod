@@ -107,7 +107,7 @@ public class TCPMasterConnection implements ModbusSlaveConnection {
             try {
                 m_ModbusTransport.close();
             } catch (IOException ex) {
-                logger.debug("close()");
+                logger.warn("close()", ex);
             }
             m_Connected = false;
         }
@@ -157,7 +157,7 @@ public class TCPMasterConnection implements ModbusSlaveConnection {
             try {
                 m_Socket.setSoTimeout(m_Timeout);
             } catch (IOException ex) {
-                logger.error("Could not set socket timeout on connection {} {}: {}", getAddress(), getPort(),
+                logger.warn("Could not set socket timeout on connection {} {}: {}", getAddress(), getPort(),
                         ex.getMessage());
             }
         }
