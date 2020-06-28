@@ -162,7 +162,7 @@ public class ModbusTCPTransport implements ModbusTransport {
             // connection reset by peer, also EOF
             throw new ModbusIOException(true);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            // ex.printStackTrace();
             throw new ModbusIOException("I/O exception - failed to read.");
         }
     }// readRequest
@@ -223,7 +223,7 @@ public class ModbusTCPTransport implements ModbusTransport {
              * return response;
              */
         } catch (Exception ex) {
-            ex.printStackTrace();
+            // ex.printStackTrace();
             throw new ModbusIOException(
                     String.format("I/O exception: %s %s", ex.getClass().getSimpleName(), ex.getMessage()));
         }
