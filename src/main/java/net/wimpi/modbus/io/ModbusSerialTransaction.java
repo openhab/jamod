@@ -185,7 +185,7 @@ public class ModbusSerialTransaction implements ModbusTransaction {
                                 Thread.sleep(m_TransDelayMS);
                             } catch (InterruptedException ex) {
                                 logger.debug("InterruptedException: {}", ex.getMessage());
-                                throw;
+                                throw ex;
                             }
                         }
 
