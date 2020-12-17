@@ -41,16 +41,19 @@ import net.wimpi.modbus.util.ModbusUtil;
  * flavor.
  *
  * @author Dieter Wimberger
+ * @author Andrew Fiddian-Green - Added 'rtuEncoded' support
  * @version @version@ (@date@)
  */
 public class ModbusTCPTransport implements ModbusTransport {
 
     private static final Logger logger = LoggerFactory.getLogger(ModbusTCPTransport.class);
-    // instance attributes
-    private DataInputStream m_Input; // input stream
-    private DataOutputStream m_Output; // output stream
-    private BytesInputStream m_ByteIn;
+
     private Socket m_Socket;
+
+    // instance attributes
+    protected DataInputStream m_Input; // input stream
+    protected DataOutputStream m_Output; // output stream
+    protected BytesInputStream m_ByteIn;
 
     /**
      * Constructs a new <tt>ModbusTransport</tt> instance,
@@ -237,7 +240,7 @@ public class ModbusTCPTransport implements ModbusTransport {
      * @param socket the socket used for communications.
      * @throws IOException if an I/O related error occurs.
      */
-    private void prepareStreams(Socket socket) throws IOException {
+    protected void prepareStreams(Socket socket) throws IOException {
 
         m_Input = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
         m_Output = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));

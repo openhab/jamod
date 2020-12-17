@@ -27,14 +27,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.wimpi.modbus.Modbus;
+import net.wimpi.modbus.io.ModbusTCPRTUTransport;
 import net.wimpi.modbus.io.ModbusTCPTransport;
 import net.wimpi.modbus.io.ModbusTransport;
 
 /**
  * Class that implements a TCPMasterConnection.
  *
- * @author Dieter Wimberger
- * @version @version@ (@date@)
+ * @author Dieter Wimberger - Initial contribution
+ * @author Andrew Fiddian-Green - Added 'rtuEncoded' support
  */
 public class TCPMasterConnection implements ModbusSlaveConnection {
     private static final Logger logger = LoggerFactory.getLogger(TCPMasterConnection.class);
@@ -51,6 +52,8 @@ public class TCPMasterConnection implements ModbusSlaveConnection {
     private ModbusTCPTransport m_ModbusTransport;
 
     private int m_ConnectTimeoutMillis;
+
+    private boolean rtuEncoded;
 
     private static StandardToStringStyle toStringStyle = new StandardToStringStyle();
 
@@ -73,9 +76,10 @@ public class TCPMasterConnection implements ModbusSlaveConnection {
         setPort(port);
     }
 
-    public TCPMasterConnection(InetAddress adr, int port, int connectTimeoutMillis) {
+    public TCPMasterConnection(InetAddress adr, int port, int connectTimeoutMillis, boolean rtuEncoded) {
         this(adr, port);
         setConnectTimeoutMillis(connectTimeoutMillis);
+        this.rtuEncoded = rtuEncoded;
     }
 
     /**
@@ -131,7 +135,7 @@ public class TCPMasterConnection implements ModbusSlaveConnection {
      */
     private void prepareTransport() throws IOException {
         if (m_ModbusTransport == null) {
-            m_ModbusTransport = new ModbusTCPTransport(m_Socket);
+            m_ModbusTransport = rtuEncoded ? new ModbusTCPRTUTransport(m_Socket) : new ModbusTCPTransport(m_Socket);
         } else {
             m_ModbusTransport.setSocket(m_Socket);
         }
