@@ -5,7 +5,7 @@
 	<groupId>net.wimpi</groupId>
 	<artifactId>jamod</artifactId>
 	<packaging>jar</packaging>
-	<version>1.2.4.OH-SNAPSHOT</version>
+	<version>1.2.5.OH-SNAPSHOT</version>
 	<name>jamod</name>
 	<url>http://jamod.sourceforge.net</url>
 	<description>
