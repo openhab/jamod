@@ -7,7 +7,7 @@ Commits from openhab1-addons (modbus binding) and openhab2-addons (modbus transp
 This project represents a Modbus implementation in 100% Java. It can be used to implement Modbus masters and slaves in various flavors:
 
 - Serial: ASCII, RTU (Master only), BIN
-- IP: TCP, UDP
+- IP: TCP, UDP, RTU/IP (Master Only)
 
 The design of this library is fully object oriented, based on abstractions which should support easy understanding, reusability and extensibility.
 
