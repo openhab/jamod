@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -197,8 +196,18 @@ public class ModbusRTUTransport extends ModbusSerialTransport {
 
     @Override
     public void close() throws IOException {
-        IOUtils.closeQuietly(m_InputStream);
-        IOUtils.closeQuietly(m_OutputStream);
+        if (m_InputStream != null) {
+            try {
+                m_InputStream.close();
+            } catch (IOException e) {
+            }
+        }
+        if (m_OutputStream != null) {
+            try {
+                m_OutputStream.close();
+            } catch (IOException e) {
+            }
+        }
         super.close();
     }// close
 
