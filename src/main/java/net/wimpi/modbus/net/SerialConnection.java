@@ -330,7 +330,7 @@ public class SerialConnection implements SerialPortEventListener, ModbusSlaveCon
 
     @Override
     public String toString() {
-        return "SerialConnection [m_SerialPort=" + m_SerialPort + ", m_Parameters.getPortName()="
-                + m_Parameters.getPortName() + "]";
+        return "SerialConnection [m_SerialPort=" + m_SerialPort
+                + (m_Parameters != null ? ", m_Parameters.getPortName()=" + m_Parameters.getPortName() : "") + "]";
     }
 }// class SerialConnection
