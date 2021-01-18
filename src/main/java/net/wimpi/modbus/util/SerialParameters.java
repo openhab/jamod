@@ -16,12 +16,8 @@
 
 package net.wimpi.modbus.util;
 
+import java.util.Objects;
 import java.util.Properties;
-
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.StandardToStringStyle;
-import org.apache.commons.lang.builder.ToStringBuilder;
 
 import gnu.io.SerialPort;
 import net.wimpi.modbus.Modbus;
@@ -49,12 +45,6 @@ public class SerialParameters {
     private String m_Encoding;
     private boolean m_Echo;
     private int m_ReceiveTimeoutMillis;
-
-    private static StandardToStringStyle toStringStyle = new StandardToStringStyle();
-
-    static {
-        toStringStyle.setUseShortClassName(true);
-    }
 
     /**
      * Constructs a new <tt>SerialParameters</tt> instance with
@@ -97,18 +87,16 @@ public class SerialParameters {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, toStringStyle).append("portName", m_PortName).append("baudRate", m_BaudRate)
-                .append("flowControlIn", getFlowControlInString()).append("flowControlOut", getFlowControlOutString())
-                .append("databits", getDatabitsString()).append("stopbits", getStopbitsString())
-                .append("parity", getParityString()).append("encoding", m_Encoding).append("echo", m_Echo)
-                .append("receiveTimeoutMillis", m_ReceiveTimeoutMillis).toString();
+        return "SerialParameters [m_PortName=" + m_PortName + ", m_BaudRate=" + m_BaudRate + ", m_FlowControlIn="
+                + m_FlowControlIn + ", m_FlowControlOut=" + m_FlowControlOut + ", m_Databits=" + m_Databits
+                + ", m_Stopbits=" + m_Stopbits + ", m_Parity=" + m_Parity + ", m_Encoding=" + m_Encoding + ", m_Echo="
+                + m_Echo + ", m_ReceiveTimeoutMillis=" + m_ReceiveTimeoutMillis + "]";
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(7, 51).append(m_PortName).append(m_BaudRate).append(m_FlowControlIn)
-                .append(m_FlowControlOut).append(m_Databits).append(m_Stopbits).append(m_Parity).append(m_Encoding)
-                .append(m_Echo).append(m_ReceiveTimeoutMillis).toHashCode();
+        return Objects.hash(m_BaudRate, m_Databits, m_Echo, m_Encoding, m_FlowControlIn, m_FlowControlOut, m_Parity,
+                m_PortName, m_ReceiveTimeoutMillis, m_Stopbits);
     }
 
     @Override
@@ -123,11 +111,11 @@ public class SerialParameters {
             return false;
         }
         SerialParameters rhs = (SerialParameters) obj;
-        return new EqualsBuilder().append(m_PortName, rhs.m_PortName).append(m_BaudRate, rhs.m_BaudRate)
-                .append(m_FlowControlIn, rhs.m_FlowControlIn).append(m_FlowControlOut, rhs.m_FlowControlOut)
-                .append(m_Databits, rhs.m_Databits).append(m_Stopbits, rhs.m_Stopbits).append(m_Parity, rhs.m_Parity)
-                .append(m_Encoding, rhs.m_Encoding).append(m_Echo, rhs.m_Echo)
-                .append(m_ReceiveTimeoutMillis, rhs.m_ReceiveTimeoutMillis).isEquals();
+        return m_BaudRate == rhs.m_BaudRate && m_Databits == rhs.m_Databits && m_Echo == rhs.m_Echo
+                && Objects.equals(m_Encoding, rhs.m_Encoding) && m_FlowControlIn == rhs.m_FlowControlIn
+                && m_FlowControlOut == rhs.m_FlowControlOut && m_Parity == rhs.m_Parity
+                && Objects.equals(m_PortName, rhs.m_PortName) && m_ReceiveTimeoutMillis == rhs.m_ReceiveTimeoutMillis
+                && m_Stopbits == rhs.m_Stopbits;
     }
 
     /**
