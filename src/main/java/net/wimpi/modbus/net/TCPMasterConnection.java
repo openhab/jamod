@@ -21,8 +21,6 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-import org.apache.commons.lang.builder.StandardToStringStyle;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,12 +52,6 @@ public class TCPMasterConnection implements ModbusSlaveConnection {
     private int m_ConnectTimeoutMillis;
 
     private boolean rtuEncoded;
-
-    private static StandardToStringStyle toStringStyle = new StandardToStringStyle();
-
-    static {
-        toStringStyle.setUseShortClassName(true);
-    }
 
     /**
      * Constructs a <tt>TCPMasterConnection</tt> instance
@@ -233,7 +225,9 @@ public class TCPMasterConnection implements ModbusSlaveConnection {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, toStringStyle).append("socket", m_Socket).toString();
+        return "TCPMasterConnection [m_Socket=" + m_Socket + ", m_Timeout=" + m_Timeout + ", m_Connected=" + m_Connected
+                + ", m_Address=" + m_Address + ", m_Port=" + m_Port + ", m_ModbusTransport=" + m_ModbusTransport
+                + ", m_ConnectTimeoutMillis=" + m_ConnectTimeoutMillis + ", rtuEncoded=" + rtuEncoded + "]";
     }
 
     public int getConnectTimeoutMillis() {

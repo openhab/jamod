@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,9 +89,24 @@ public class ModbusTCPTransport implements ModbusTransport {
 
     @Override
     public void close() throws IOException {
-        IOUtils.closeQuietly(m_Input);
-        IOUtils.closeQuietly(m_Output);
-        IOUtils.closeQuietly(m_Socket);
+        if (m_Input != null) {
+            try {
+                m_Input.close();
+            } catch (IOException e) {
+            }
+        }
+        if (m_Output != null) {
+            try {
+                m_Output.close();
+            } catch (IOException e) {
+            }
+        }
+        if (m_Socket != null) {
+            try {
+                m_Socket.close();
+            } catch (IOException e) {
+            }
+        }
     }// close
 
     @Override
