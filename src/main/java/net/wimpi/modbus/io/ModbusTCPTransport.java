@@ -45,6 +45,9 @@ import net.wimpi.modbus.util.ModbusUtil;
  */
 public class ModbusTCPTransport implements ModbusTransport {
 
+    private final int DEFAULT_RECEIVE_TIMEOUT_MILLIS = 0;
+    private final String PROPERTY_TIMEOUT_KEY = "net.wimpi.modbus.io.ModbusTCPTransport.receiveTimeoutMillis";
+
     private static final Logger logger = LoggerFactory.getLogger(ModbusTCPTransport.class);
 
     private Socket m_Socket;
@@ -54,6 +57,8 @@ public class ModbusTCPTransport implements ModbusTransport {
     protected DataOutputStream m_Output; // output stream
     protected BytesInputStream m_ByteIn;
 
+    protected int receiveTimeoutMillis;
+
     /**
      * Constructs a new <tt>ModbusTransport</tt> instance,
      * for a given <tt>Socket</tt>.
@@ -62,6 +67,11 @@ public class ModbusTCPTransport implements ModbusTransport {
      * @param socket the <tt>Socket</tt> used for message transport.
      */
     public ModbusTCPTransport(Socket socket) {
+        receiveTimeoutMillis = DEFAULT_RECEIVE_TIMEOUT_MILLIS;
+        String propertyTimeout = System.getProperty(PROPERTY_TIMEOUT_KEY);
+        if (propertyTimeout != null && propertyTimeout != "") {
+            receiveTimeoutMillis = Integer.parseInt(propertyTimeout);
+        }
         try {
             setSocket(socket);
         } catch (IOException ex) {
@@ -71,7 +81,20 @@ public class ModbusTCPTransport implements ModbusTransport {
             throw new IllegalStateException(errMsg);
             // @commentend@
         }
-    }// constructor
+    }
+
+    /**
+     * Constructs a new <tt>ModbusTransport</tt> instance,
+     * for a given <tt>Socket</tt> with given timeout.
+     * <p>
+     *
+     * @param socket the <tt>Socket</tt> used for message transport.
+     * @param receiveTimeoutMillis timeout for receive operations.
+     */
+    public ModbusTCPTransport(Socket socket, int receiveTimeoutMillis) {
+        this(socket);
+        this.receiveTimeoutMillis = receiveTimeoutMillis;
+    }
 
     /**
      * Sets the <tt>Socket</tt> used for message transport and
@@ -120,10 +143,25 @@ public class ModbusTCPTransport implements ModbusTransport {
         }
     }// write
 
+    protected boolean awaitData(DataInputStream in, int amount, long startTimeMillis) throws IOException {
+        if (receiveTimeoutMillis == 0) {
+            return true;
+        }
+        while (in.available() < amount && System.currentTimeMillis() < startTimeMillis + receiveTimeoutMillis) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                // will do nothing in this case, just wait longer
+            }
+        }
+        return in.available() >= amount;
+    }
+
     @Override
     public ModbusRequest readRequest() throws ModbusIOException {
 
         // System.out.println("readRequest()");
+        long startTimeMillis = System.currentTimeMillis();
         try {
 
             ModbusRequest req = null;
@@ -132,13 +170,13 @@ public class ModbusTCPTransport implements ModbusTransport {
                 byte[] buffer = m_ByteIn.getBuffer();
 
                 // read to byte length of message
-                if (m_Input.read(buffer, 0, 6) == -1) {
+                if (!awaitData(m_Input, 6, startTimeMillis) || m_Input.read(buffer, 0, 6) == -1) {
                     throw new EOFException("Premature end of stream (Header truncated).");
                 }
                 // extract length of bytes following in message
                 int bf = ModbusUtil.registerToShort(buffer, 4);
                 // read rest
-                if (m_Input.read(buffer, 6, bf) == -1) {
+                if (!awaitData(m_Input, bf, startTimeMillis) || m_Input.read(buffer, 6, bf) == -1) {
                     throw new ModbusIOException("Premature end of stream (Message truncated).");
                 }
                 m_ByteIn.reset(buffer, (6 + bf));
@@ -188,6 +226,7 @@ public class ModbusTCPTransport implements ModbusTransport {
     public ModbusResponse readResponse() throws ModbusIOException {
         // System.out.println("readResponse()");
 
+        long startTimeMillis = System.currentTimeMillis();
         try {
 
             ModbusResponse res = null;
@@ -196,13 +235,13 @@ public class ModbusTCPTransport implements ModbusTransport {
                 byte[] buffer = m_ByteIn.getBuffer();
 
                 // read to byte length of message
-                if (m_Input.read(buffer, 0, 6) == -1) {
+                if (!awaitData(m_Input, 6, startTimeMillis) || m_Input.read(buffer, 0, 6) == -1) {
                     throw new ModbusIOException("Premature end of stream (Header truncated).");
                 }
                 // extract length of bytes following in message
                 int bf = ModbusUtil.registerToShort(buffer, 4);
                 // read rest
-                if (m_Input.read(buffer, 6, bf) == -1) {
+                if (!awaitData(m_Input, bf, startTimeMillis) || m_Input.read(buffer, 6, bf) == -1) {
                     throw new ModbusIOException("Premature end of stream (Message truncated).");
                 }
                 m_ByteIn.reset(buffer, (6 + bf));

@@ -60,6 +60,18 @@ public class ModbusTCPRTUTransport extends ModbusTCPTransport {
         super(socket);
     }// constructor
 
+    /**
+     * Constructs a new <tt>ModbusTransport</tt> instance,
+     * for a given <tt>Socket</tt> with given timeout.
+     * <p>
+     *
+     * @param socket the <tt>Socket</tt> used for message transport.
+     * @param receiveTimeoutMillis timeout for receive operations.
+     */
+    public ModbusTCPRTUTransport(Socket socket, int receiveTimeoutMillis) {
+        super(socket, receiveTimeoutMillis);
+    }// constructor
+
     @Override
     public void writeMessage(ModbusMessage msg) throws ModbusIOException {
         try {
@@ -99,12 +111,15 @@ public class ModbusTCPRTUTransport extends ModbusTCPTransport {
         ModbusResponse response = null;
         int dlength = 0;
 
+        long startTimeMillis = System.currentTimeMillis();
         try {
             // read to function code, create request and read function specific bytes
             synchronized (m_ByteIn) {
+                awaitData(m_Input, 1, startTimeMillis);
                 int uid = m_Input.read();
                 logger.trace("Managed to read at least one byte");
                 if (uid != -1) {
+                    awaitData(m_Input, 1, startTimeMillis);
                     int fc = m_Input.read();
                     m_ByteInOut.reset();
                     m_ByteInOut.writeByte(uid);
@@ -114,7 +129,7 @@ public class ModbusTCPRTUTransport extends ModbusTCPTransport {
                     response = ModbusResponse.createModbusResponse(fc);
                     response.setHeadless();
 
-                    getResponse(fc, m_ByteInOut);
+                    getResponse(startTimeMillis, fc, m_ByteInOut);
 
                     dlength = m_ByteInOut.size() - 2; // less the crc
                     logger.debug("Response: {}", ModbusUtil.toHex(m_ByteInOut.getBuffer(), 0, dlength + 2));
@@ -156,7 +171,7 @@ public class ModbusTCPRTUTransport extends ModbusTCPTransport {
         m_ByteInOut = new BytesOutputStream(m_InBuffer);
     }// prepareStreams
 
-    private void getResponse(int fn, BytesOutputStream out) throws IOException {
+    private void getResponse(long startTimeMillis, int fn, BytesOutputStream out) throws IOException {
         int bc = -1, bc2 = -1, bcw = -1;
         int inpBytes = 0;
         byte inpBuf[] = new byte[256];
@@ -172,9 +187,11 @@ public class ModbusTCPRTUTransport extends ModbusTCPTransport {
             case 0x15: // write log entry (60000 memory reference)
             case 0x17:
                 // read the byte count;
+                awaitData(m_Input, 1, startTimeMillis);
                 bc = m_Input.read();
                 out.write(bc);
                 // now get the specified number of bytes and the 2 CRC bytes
+                awaitData(m_Input, bc + 2, startTimeMillis);
                 inpBytes = m_Input.read(inpBuf, 0, bc + 2);
                 out.write(inpBuf, 0, inpBytes);
                 if (inpBytes != bc + 2) {
@@ -187,28 +204,33 @@ public class ModbusTCPRTUTransport extends ModbusTCPTransport {
             case 0x0F:
             case 0x10:
                 // read status: only the CRC remains after address and function code
+                awaitData(m_Input, 6, startTimeMillis);
                 inpBytes = m_Input.read(inpBuf, 0, 6);
                 out.write(inpBuf, 0, inpBytes);
                 break;
             case 0x07:
             case 0x08:
                 // read status: only the CRC remains after address and function code
+                awaitData(m_Input, 3, startTimeMillis);
                 inpBytes = m_Input.read(inpBuf, 0, 3);
                 out.write(inpBuf, 0, inpBytes);
                 break;
             case 0x16:
                 // eight bytes in addition to the address and function codes
+                awaitData(m_Input, 8, startTimeMillis);
                 inpBytes = m_Input.read(inpBuf, 0, 8);
                 out.write(inpBuf, 0, inpBytes);
                 break;
             case 0x18:
                 // read the byte count word
+                awaitData(m_Input, 2, startTimeMillis);
                 bc = m_Input.read();
                 out.write(bc);
                 bc2 = m_Input.read();
                 out.write(bc2);
                 bcw = ModbusUtil.makeWord(bc, bc2);
                 // now get the specified number of bytes and the 2 CRC bytes
+                awaitData(m_Input, bcw + 2, startTimeMillis);
                 inpBytes = m_Input.read(inpBuf, 0, bcw + 2);
                 out.write(inpBuf, 0, inpBytes);
                 break;
