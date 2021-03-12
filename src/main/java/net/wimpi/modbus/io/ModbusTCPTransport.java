@@ -132,15 +132,11 @@ public class ModbusTCPTransport implements ModbusTransport {
                 byte[] buffer = m_ByteIn.getBuffer();
 
                 // read to byte length of message
-                if (m_Input.read(buffer, 0, 6) == -1) {
-                    throw new EOFException("Premature end of stream (Header truncated).");
-                }
+                m_Input.readFully(buffer, 0, 6);
                 // extract length of bytes following in message
                 int bf = ModbusUtil.registerToShort(buffer, 4);
                 // read rest
-                if (m_Input.read(buffer, 6, bf) == -1) {
-                    throw new ModbusIOException("Premature end of stream (Message truncated).");
-                }
+                m_Input.readFully(buffer, 6, bf);
                 m_ByteIn.reset(buffer, (6 + bf));
                 m_ByteIn.skip(7);
                 int functionCode = m_ByteIn.readUnsignedByte();
