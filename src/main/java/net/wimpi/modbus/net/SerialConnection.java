@@ -56,6 +56,7 @@ public class SerialConnection implements SerialPortEventListener, ModbusSlaveCon
     private SerialPort m_SerialPort;
     private boolean m_Open;
     private InputStream m_SerialIn;
+    private boolean m_PortsRequested;
 
     /**
      * Creates a SerialConnection object and initializes variables passed in
@@ -66,6 +67,7 @@ public class SerialConnection implements SerialPortEventListener, ModbusSlaveCon
     public SerialConnection(SerialParameters parameters) {
         m_Parameters = parameters;
         m_Open = false;
+        m_PortsRequested = false;
     }// constructor
 
     /**
@@ -111,7 +113,15 @@ public class SerialConnection implements SerialPortEventListener, ModbusSlaveCon
 
         // 1. obtain a CommPortIdentifier instance
         try {
-            m_PortIdentifyer = CommPortIdentifier.getPortIdentifier(m_Parameters.getPortName());
+            try {
+                m_PortIdentifyer = CommPortIdentifier.getPortIdentifier(m_Parameters.getPortName());
+            } catch (NoSuchPortException e) {
+                if (!m_PortsRequested) {
+                    CommPortIdentifier.getPortIdentifiers();
+                } else {
+                    throw e;
+                }
+            }
         } catch (NoSuchPortException e) {
             final String errMsg = "Could not get port identifier, maybe insufficient permissions. " + e.getMessage();
             logger.debug("Could not get port identifier, maybe insufficient permissions. {}: {}",
