@@ -5,7 +5,7 @@
 	<groupId>net.wimpi</groupId>
 	<artifactId>jamod</artifactId>
 	<packaging>jar</packaging>
-	<version>1.3.2-SNAPSHOT</version>
+	<version>1.3.2.OH</version>
 	<name>jamod</name>
 	<url>http://jamod.sourceforge.net</url>
 	<description>
@@ -33,15 +33,6 @@
 		<artifactId>oss-parent</artifactId>
 		<version>7</version>
 	</parent>
-
-	<repositories>
-		<!-- extra repository for org.openhab.nrjavaserial -->
-		<repository>
-			<id>openhab</id>
-			<name>openHAB repository</name>
-			<url>https://dl.bintray.com/openhab/mvn</url>
-		</repository>
-	</repositories>
 
 	<!-- dependency versions here should match roughly the runtime environment of openHAB2 -->
 	<dependencies>
@@ -141,9 +132,9 @@
 
 	<distributionManagement>
 		<repository>
-			<id>bintray</id>
-			<name>openhab-mvn</name>
-			<url>https://api.bintray.com/maven/openhab/mvn/jamod/;publish=1</url>
+			<id>jfrog</id>
+			<name>openhab-artifactory-3rdparty</name>
+			<url>https://openhab.jfrog.io/artifactory/libs-3rdparty-local</url>
 		</repository>
 	</distributionManagement>
 
