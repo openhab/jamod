@@ -140,7 +140,6 @@ public class ModbusRTUTransport extends ModbusSerialTransport {
                         // timeout and to message specific parsing to read a response.
                         getResponse(fc, m_ByteInOut);
                         dlength = m_ByteInOut.size() - 2; // less the crc
-                        logger.debug("Response: {}", ModbusUtil.toHex(m_ByteInOut.getBuffer(), 0, dlength + 2));
 
                         m_ByteIn.reset(m_InBuffer, dlength);
 
@@ -148,8 +147,14 @@ public class ModbusRTUTransport extends ModbusSerialTransport {
                         int[] crc = ModbusUtil.calculateCRC(m_InBuffer, 0, dlength); // does not include CRC
                         if (ModbusUtil.unsignedByteToInt(m_InBuffer[dlength]) != crc[0]
                                 || ModbusUtil.unsignedByteToInt(m_InBuffer[dlength + 1]) != crc[1]) {
-                            throw new IOException("CRC Error in received frame: " + dlength + " bytes: "
-                                    + ModbusUtil.toHex(m_ByteIn.getBuffer(), 0, dlength));
+                            logger.debug("Response (CRC error): {}",
+                                    ModbusUtil.toHex(m_ByteInOut.getBuffer(), 0, dlength + 2));
+                            throw new IOException("CRC Error in received frame. " + dlength + " bytes of payload ("
+                                    + ModbusUtil.toHex(m_ByteInOut.getBuffer(), 0, dlength) + ") with invalid CRC of "
+                                    + ModbusUtil.toHex(m_InBuffer, dlength, 2));
+                        } else {
+                            logger.debug("Response (CRC OK): {}",
+                                    ModbusUtil.toHex(m_ByteInOut.getBuffer(), 0, dlength + 2));
                         }
                     } else {
                         throw new IOException("Error reading response (EOF)");
