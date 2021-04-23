@@ -140,7 +140,6 @@ public class ModbusRTUTransport extends ModbusSerialTransport {
                         // timeout and to message specific parsing to read a response.
                         getResponse(fc, m_ByteInOut);
                         dlength = m_ByteInOut.size() - 2; // less the crc
-                        logger.debug("Response: {}", ModbusUtil.toHex(m_ByteInOut.getBuffer(), 0, dlength + 2));
 
                         m_ByteIn.reset(m_InBuffer, dlength);
 
@@ -148,8 +147,14 @@ public class ModbusRTUTransport extends ModbusSerialTransport {
                         int[] crc = ModbusUtil.calculateCRC(m_InBuffer, 0, dlength); // does not include CRC
                         if (ModbusUtil.unsignedByteToInt(m_InBuffer[dlength]) != crc[0]
                                 || ModbusUtil.unsignedByteToInt(m_InBuffer[dlength + 1]) != crc[1]) {
-                            throw new IOException("CRC Error in received frame: " + dlength + " bytes: "
-                                    + ModbusUtil.toHex(m_ByteIn.getBuffer(), 0, dlength));
+                            logger.debug("Response (CRC error): {}",
+                                    ModbusUtil.toHex(m_ByteInOut.getBuffer(), 0, dlength + 2));
+                            throw new IOException("CRC Error in received frame. " + dlength + " bytes of payload ("
+                                    + ModbusUtil.toHex(m_ByteInOut.getBuffer(), 0, dlength) + ") with invalid CRC of "
+                                    + ModbusUtil.toHex(m_InBuffer, dlength, 2));
+                        } else {
+                            logger.debug("Response (CRC OK): {}",
+                                    ModbusUtil.toHex(m_ByteInOut.getBuffer(), 0, dlength + 2));
                         }
                     } else {
                         throw new IOException("Error reading response (EOF)");
@@ -214,6 +219,7 @@ public class ModbusRTUTransport extends ModbusSerialTransport {
     private void getResponse(int fn, BytesOutputStream out) throws IOException {
         int bc = -1, bc2 = -1, bcw = -1;
         int inpBytes = 0;
+        int awaitChars;
         byte inpBuf[] = new byte[256];
 
         try {
@@ -232,12 +238,14 @@ public class ModbusRTUTransport extends ModbusSerialTransport {
                     bc = m_InputStream.read();
                     out.write(bc);
                     // now get the specified number of bytes and the 2 CRC bytes
-                    setReceiveThreshold(bc + 2);
-                    inpBytes = m_InputStream.read(inpBuf, 0, bc + 2);
+                    awaitChars = bc + 2;
+                    setReceiveThreshold(awaitChars);
+                    inpBytes = m_InputStream.read(inpBuf, 0, awaitChars);
                     out.write(inpBuf, 0, inpBytes);
                     m_CommPort.disableReceiveThreshold();
-                    if (inpBytes != bc + 2) {
-                        logger.debug("awaited {} bytes, but received {}", (bc + 2), inpBytes);
+                    if (inpBytes != awaitChars) {
+                        throw new IOException(String.format("Truncated response: awaited {} bytes, but received {}",
+                                awaitChars, inpBytes));
                     }
                     break;
                 case 0x05:
@@ -246,25 +254,40 @@ public class ModbusRTUTransport extends ModbusSerialTransport {
                 case 0x0F:
                 case 0x10:
                     // read status: only the CRC remains after address and function code
-                    setReceiveThreshold(6);
-                    inpBytes = m_InputStream.read(inpBuf, 0, 6);
+                    awaitChars = 6;
+                    setReceiveThreshold(awaitChars);
+                    inpBytes = m_InputStream.read(inpBuf, 0, awaitChars);
                     out.write(inpBuf, 0, inpBytes);
                     m_CommPort.disableReceiveThreshold();
+                    if (inpBytes != awaitChars) {
+                        throw new IOException(String.format("Truncated response: awaited {} bytes, but received {}",
+                                awaitChars, inpBytes));
+                    }
                     break;
                 case 0x07:
                 case 0x08:
                     // read status: only the CRC remains after address and function code
-                    setReceiveThreshold(3);
-                    inpBytes = m_InputStream.read(inpBuf, 0, 3);
+                    awaitChars = 3;
+                    setReceiveThreshold(awaitChars);
+                    inpBytes = m_InputStream.read(inpBuf, 0, awaitChars);
                     out.write(inpBuf, 0, inpBytes);
                     m_CommPort.disableReceiveThreshold();
+                    if (inpBytes != awaitChars) {
+                        throw new IOException(String.format("Truncated response: awaited {} bytes, but received {}",
+                                awaitChars, inpBytes));
+                    }
                     break;
                 case 0x16:
                     // eight bytes in addition to the address and function codes
-                    setReceiveThreshold(8);
-                    inpBytes = m_InputStream.read(inpBuf, 0, 8);
+                    awaitChars = 8;
+                    setReceiveThreshold(awaitChars);
+                    inpBytes = m_InputStream.read(inpBuf, 0, awaitChars);
                     out.write(inpBuf, 0, inpBytes);
                     m_CommPort.disableReceiveThreshold();
+                    if (inpBytes != awaitChars) {
+                        throw new IOException(String.format("Truncated response: awaited {} bytes, but received {}",
+                                awaitChars, inpBytes));
+                    }
                     break;
                 case 0x18:
                     // read the byte count word
@@ -275,10 +298,15 @@ public class ModbusRTUTransport extends ModbusSerialTransport {
                     out.write(bc2);
                     bcw = ModbusUtil.makeWord(bc, bc2);
                     // now get the specified number of bytes and the 2 CRC bytes
-                    setReceiveThreshold(bcw + 2);
-                    inpBytes = m_InputStream.read(inpBuf, 0, bcw + 2);
+                    awaitChars = bcw + 2;
+                    setReceiveThreshold(awaitChars);
+                    inpBytes = m_InputStream.read(inpBuf, 0, awaitChars);
                     out.write(inpBuf, 0, inpBytes);
                     m_CommPort.disableReceiveThreshold();
+                    if (inpBytes != awaitChars) {
+                        throw new IOException(String.format("Truncated response: awaited {} bytes, but received {}",
+                                awaitChars, inpBytes));
+                    }
                     break;
             }
         } catch (IOException e) {
