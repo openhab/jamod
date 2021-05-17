@@ -311,7 +311,7 @@ public class ModbusRTUTransport extends ModbusSerialTransport {
             }
         } catch (IOException e) {
             m_CommPort.disableReceiveThreshold();
-            throw new IOException("getResponse serial port exception");
+            throw e;
         }
     }// getResponse
 
